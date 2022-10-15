@@ -14,12 +14,11 @@ import (
 	. "github.com/ButterflyGate/logger/levels"
 )
 
-type mylog func(msg any, args ...any)
+type logFunc func(msg any, args ...any)
 
-func makeLogFunc(l LogLevel, output io.Writer) mylog {
-	return mylog(
+func makeLogFunc(l LogLevel, output io.Writer) logFunc {
+	return logFunc(
 		func(mainMsg any, args ...any) {
-
 			defer func() {
 				err := recover()
 				if err != nil {
@@ -40,15 +39,15 @@ func noneLog(msg any, args ...any) {}
 
 type Logger struct {
 	level         LogLevel
-	emergency     mylog
-	alert         mylog
-	critical      mylog
-	errors        mylog
-	warning       mylog
-	notice        mylog
-	informational mylog
-	debug         mylog
-	trace         mylog
+	emergency     logFunc
+	alert         logFunc
+	critical      logFunc
+	errors        logFunc
+	warning       logFunc
+	notice        logFunc
+	informational logFunc
+	debug         logFunc
+	trace         logFunc
 }
 
 func NewLogger(level LogLevel) *Logger {
@@ -124,7 +123,7 @@ func recovery(err, msg any) {
 	}()
 
 	now := time.Now()
-	_, file, line, _ := runtime.Caller(18)
+	_, file, line, _ := runtime.Caller(6)
 	cursor := file + ":" + strconv.Itoa(line)
 	fmt.Fprintf(os.Stderr,
 		`{
@@ -133,7 +132,8 @@ func recovery(err, msg any) {
 	"cursor": %s,
 	"fatal-message": "Logger Not Working and Trying Recovering"
 	"message": %+v
-}`+"\n", now, cursor, msg)
+}
+`, now, cursor, msg)
 
 	je := json.NewEncoder(os.Stderr)
 	je.Encode(err)
@@ -145,7 +145,8 @@ func recovery(err, msg any) {
 		"timestamp": %v,
 		"cursor": %s
 		"fatal-message": "Success Recovering"
-}`+"\n", now, cursor)
+}
+`, now, cursor)
 }
 
 func (l *Logger) Emergency(msg any, args ...any) {
