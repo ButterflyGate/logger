@@ -8,19 +8,20 @@ import (
 	"strings"
 	"time"
 
-	"github.com/ButterflyGate/logger/levels"
+	"github.com/ButterflyGate/logger/internal/options"
 )
 
-type logFormat struct {
-	Level      string      `json:"level"`
-	Timestamp  time.Time   `json:"timestamp"`
-	Cursor     string      `json:"cursor"`
-	Message    interface{} `json:"message,omitempty"`
-	Data       interface{} `json:"structure_data,omitempty"`
-	StructName string      `json:"structure_name,omitempty"`
+type LogFormat struct {
+	options    *options.Options `json:"-"`
+	Level      string           `json:"level,omitempty"`
+	Timestamp  *time.Time       `json:"timestamp,omitempty"`
+	Cursor     string           `json:"cursor,omitempty"`
+	Message    interface{}      `json:"message,omitempty"`
+	Data       interface{}      `json:"structure_data,omitempty"`
+	StructName string           `json:"structure_name,omitempty"`
 }
 
-func NewLogFormat(level levels.LogLevel, timestamp time.Time, mainMsg interface{}, args ...interface{}) *logFormat {
+func NewLogFormat(option *options.Options, level string, timestamp *time.Time, mainMsg interface{}, args ...interface{}) *LogFormat {
 	var data interface{}
 	varName := ""
 	switch msg := mainMsg.(type) {
@@ -33,20 +34,41 @@ func NewLogFormat(level levels.LogLevel, timestamp time.Time, mainMsg interface{
 	default:
 		mainMsg, data, varName = otherTypeMsg(msg, args...)
 	}
+	if option == nil {
+		return &LogFormat{
+			options:    option,
+			Level:      level,
+			Timestamp:  timestamp,
+			Cursor:     getCursor(),
+			Message:    mainMsg,
+			Data:       data,
+			StructName: varName,
+		}
+	}
 
-	cursor := getCursor()
+	if !option.Level {
+		level = ""
+	}
+	if !option.Timestamp {
+		timestamp = nil
+	}
+	cursor := ""
+	if option.Cursor { // 関数を呼ぶ手間を省きたいためここだけ NOT演算子なし
+		cursor = getCursor()
+	}
 
-	return &logFormat{
-		Level:      level.String(),
+	return &LogFormat{
+		options:    option,
+		Level:      level,
 		Timestamp:  timestamp,
 		Cursor:     cursor,
 		Message:    mainMsg,
-		StructName: varName,
 		Data:       data,
+		StructName: varName,
 	}
 }
 
-func (l *logFormat) String() string {
+func (l *LogFormat) String() string {
 	format, err := json.MarshalIndent(l, "", "  ")
 	if err != nil {
 		panic(map[string]interface{}{
