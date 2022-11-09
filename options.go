@@ -2,17 +2,14 @@ package logger
 
 import "github.com/ButterflyGate/logger/internal/options"
 
-type LoggerOptions interface {
-	HideLevel() LoggerOptions
-	ShowLevel() LoggerOptions
-	HideTimestamp() LoggerOptions
-	ShowTimestamp() LoggerOptions
-	HideCursor() LoggerOptions
-	ShowCursor() LoggerOptions
+type option = options.Child
+type OutputOption = options.OutputOption
+type FormatOption = options.FormatOptions
+
+func DefaultOutputOption() OutputOption {
+	return options.NewOutputOption()
 }
 
-type Options = options.Options
-
-func DefaultOption() *Options {
-	return options.NewDefaultOptions()
+func DefaultFormatOption() FormatOption {
+	return options.NewFormatOption()
 }

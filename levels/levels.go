@@ -2,6 +2,8 @@ package levels
 
 type LogLevel int
 
+const LevelCnt = 8
+
 const (
 	None LogLevel = iota
 	Emergency

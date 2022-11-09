@@ -14,12 +14,12 @@ import (
 	. "github.com/ButterflyGate/logger/levels"
 )
 
-type logFunc func(option *options.Options, msg any, args ...any)
+type logFunc func(option options.Options, msg any, args ...any)
 
 func makeLogFunc(l LogLevel, output io.Writer) logFunc {
 	level := l.String()
 	return logFunc(
-		func(option *options.Options, mainMsg any, args ...any) {
+		func(option options.Options, mainMsg any, args ...any) {
 			defer func() {
 				err := recover()
 				if err != nil {
@@ -37,7 +37,7 @@ func makeLogFunc(l LogLevel, output io.Writer) logFunc {
 	)
 }
 
-func noneLog(_ *options.Options, _ any, _ ...any) {}
+func noneLog(_ options.Options, _ any, _ ...any) {}
 
 func recovery(err, msg any) {
 	defer func() {

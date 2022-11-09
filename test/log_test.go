@@ -6,7 +6,6 @@ import (
 
 	"github.com/ButterflyGate/logger"
 	. "github.com/ButterflyGate/logger/levels"
-	"github.com/ButterflyGate/logger/options"
 )
 
 func TestLogger(t *testing.T) {

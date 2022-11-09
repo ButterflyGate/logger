@@ -12,16 +12,16 @@ import (
 )
 
 type LogFormat struct {
-	options    *options.Options `json:"-"`
-	Level      string           `json:"level,omitempty"`
-	Timestamp  *time.Time       `json:"timestamp,omitempty"`
-	Cursor     string           `json:"cursor,omitempty"`
-	Message    interface{}      `json:"message,omitempty"`
-	Data       interface{}      `json:"structure_data,omitempty"`
-	StructName string           `json:"structure_name,omitempty"`
+	options    options.Options `json:"-"`
+	Level      string          `json:"level,omitempty"`
+	Timestamp  *time.Time      `json:"timestamp,omitempty"`
+	Cursor     string          `json:"cursor,omitempty"`
+	Message    interface{}     `json:"message,omitempty"`
+	Data       interface{}     `json:"structure_data,omitempty"`
+	StructName string          `json:"structure_name,omitempty"`
 }
 
-func NewLogFormat(option *options.Options, level string, timestamp *time.Time, mainMsg interface{}, args ...interface{}) *LogFormat {
+func NewLogFormat(option options.Options, level string, timestamp *time.Time, mainMsg interface{}, args ...interface{}) *LogFormat {
 	var data interface{}
 	varName := ""
 	switch msg := mainMsg.(type) {
@@ -46,14 +46,14 @@ func NewLogFormat(option *options.Options, level string, timestamp *time.Time, m
 		}
 	}
 
-	if !option.Level {
+	if !option.IsOutputLevel() {
 		level = ""
 	}
-	if !option.Timestamp {
+	if !option.IsOutputTimestamp() {
 		timestamp = nil
 	}
 	cursor := ""
-	if option.Cursor { // 関数を呼ぶ手間を省きたいためここだけ NOT演算子なし
+	if option.IsOutputCursor() { // 関数を呼ぶ手間を省きたいためここだけ NOT演算子なし
 		cursor = getCursor()
 	}
 
@@ -69,7 +69,13 @@ func NewLogFormat(option *options.Options, level string, timestamp *time.Time, m
 }
 
 func (l *LogFormat) String() string {
-	format, err := json.MarshalIndent(l, "", "  ")
+	format, err := []byte{}, error(nil)
+	if l.options.IsFormatReadable() {
+		format, err = json.MarshalIndent(l, "", "  ")
+	} else {
+		format, err = json.Marshal(l)
+	}
+
 	if err != nil {
 		panic(map[string]interface{}{
 			"message": err.Error(),

@@ -1,26 +1,48 @@
 package options
 
-type FormatOptions struct {
-	JsonReadable bool
+type FormatOptions interface {
+	FormatJson() FormatOptions
+	FormatText() FormatOptions
+
+	apply(*controller) *controller
 }
 
-func NewFormatOption() *FormatOptions {
-	return &FormatOptions{
-		JsonReadable: true,
+type formatOptions struct {
+	json     bool
+	readable bool
+}
+
+func NewFormatOption() formatOptions {
+	return formatOptions{
+		json:     true,
+		readable: true,
 	}
 }
 
-// 下記関数群に関する注釈
-// options.go に定義された Options構造体をレシーバに持ち、返り値も同様のものであり、
-// 本来 options.go で定義すべき関数群だが、本質的には FormatOptions を操作する関数であるため、
-// 本ファイルにて定義した。
-
-func (o *Options) FormatJsonOneLine() *Options {
-	o.JsonReadable = false
+func (o formatOptions) FormatJson() FormatOptions {
+	o.json = true
 	return o
 }
 
-func (o *Options) FormatJsonReadable() *Options {
-	o.JsonReadable = true
+func (o formatOptions) FormatText() FormatOptions {
+	o.json = false
 	return o
+}
+
+func (o formatOptions) FormatReadable() FormatOptions {
+	o.json = false
+	return o
+}
+
+func (o formatOptions) FormatOneline() FormatOptions {
+	o.json = false
+	return o
+}
+
+func (o formatOptions) apply(parent *controller) *controller {
+	if parent == nil {
+		parent = &controller{}
+	}
+	parent.format = o
+	return parent
 }

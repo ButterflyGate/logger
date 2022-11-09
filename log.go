@@ -12,7 +12,7 @@ type Log interface {
 	Error(msg any, args ...any)
 	Warning(msg any, args ...any)
 	Notice(msg any, args ...any)
-	Informational(msg any, args ...any)
+	Information(msg any, args ...any)
 	Debug(msg any, args ...any)
 	Trace(msg any, args ...any)
 }
@@ -23,9 +23,9 @@ type Logger interface {
 }
 
 func NewLogger(level levels.LogLevel) Logger {
-	return internal.NewLoggerWithOption(level, nil)
+	return NewLoggerWithOption(level)
 }
 
-func NewLoggerWithOption(level levels.LogLevel, option *Options) Logger {
-	return internal.NewLoggerWithOption(level, option)
+func NewLoggerWithOption(level levels.LogLevel, options ...option) Logger {
+	return internal.NewLoggerWithOption(level, options...)
 }

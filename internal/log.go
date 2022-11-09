@@ -1,16 +1,17 @@
 package internal
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/ButterflyGate/logger/internal/options"
+	"github.com/ButterflyGate/logger/levels"
 	. "github.com/ButterflyGate/logger/levels"
+	"golang.org/x/xerrors"
 )
 
 type Logger struct {
 	level   LogLevel
-	options *options.Options
+	options options.Options
 
 	emergency     logFunc
 	alert         logFunc
@@ -26,14 +27,27 @@ type Logger struct {
 func NewLogger(level LogLevel) *Logger {
 	return NewLoggerWithOption(level, nil)
 }
-func NewLoggerWithOption(level LogLevel, option *options.Options) *Logger {
-	if option == nil {
-		option = options.NewDefaultOptions()
-	}
-
+func NewLoggerWithOption(level LogLevel, option ...options.Child) *Logger {
+	c := options.NewController(option...)
 	l := &Logger{
+		level:   level,
+		options: c,
+	}
+	err := l.setFunction(level)
+	if err != nil {
+		l.setFunction(levels.Informational)
+		l.Warning(err)
+		l.Information("log level is changed to \"%s\"", levels.Informational)
+		return l
+	}
+	l.Information("successfly created logger struct")
+	return l
+}
+
+func (l *Logger) setFunction(level LogLevel) error {
+	*l = Logger{
 		level:         level,
-		options:       option,
+		options:       l.options,
 		emergency:     noneLog,
 		alert:         noneLog,
 		critical:      noneLog,
@@ -44,6 +58,7 @@ func NewLoggerWithOption(level LogLevel, option *options.Options) *Logger {
 		debug:         noneLog,
 		trace:         noneLog,
 	}
+
 	switch level {
 	case Trace:
 		l.trace = makeLogFunc(Trace, os.Stdout)
@@ -72,25 +87,21 @@ func NewLoggerWithOption(level LogLevel, option *options.Options) *Logger {
 	case Emergency:
 		l.emergency = makeLogFunc(Emergency, os.Stderr)
 	default:
-		fmt.Fprintf(os.Stderr, "unknown log level %v", level)
-		return l
+		return xerrors.Errorf("unknown log level %v", level)
 	}
-	l.Informational("successfly created logger struct")
-	return l
+	return nil
 }
 
 func (l *Logger) ResetLevel(level LogLevel) {
-	l = NewLoggerWithOption(level, l.options)
+	err := l.setFunction(level)
+	if err != nil {
+		l.setFunction(levels.Informational)
+		l.Warning(err)
+		l.Information("log level is changed to \"%s\"", levels.Informational)
+		return
+	}
+	l.Information("set loglevel %s", level)
 }
-
-// func fillSpace(wordCount int, msg string) string {
-// 	if len(msg) <= wordCount {
-// 		return msg
-// 	}
-// 	space := make([]byte, wordCount)
-// 	msg = string(append([]byte(msg), space...))
-// 	return msg[:wordCount]
-// }
 
 func (l *Logger) Emergency(msg any, args ...any) {
 	l.emergency(l.options, msg, args...)
@@ -110,7 +121,7 @@ func (l *Logger) Warning(msg any, args ...any) {
 func (l *Logger) Notice(msg any, args ...any) {
 	l.notice(l.options, msg, args...)
 }
-func (l *Logger) Informational(msg any, args ...any) {
+func (l *Logger) Information(msg any, args ...any) {
 	l.informational(l.options, msg, args...)
 }
 func (l *Logger) Debug(msg any, args ...any) {
