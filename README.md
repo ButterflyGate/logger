@@ -17,36 +17,30 @@ logging levels
 | Debug         | 8      | stdout      | Similarly, above levels and this level |
 | Trace         | 99     | stdout      | Similarly, above levels and this level |
 
+## Options
+- these are configurable elements for output or hide
+  - log level
+  - timestamp
+  - called cursor
+
+- you can specify output format
+  - using indent or not (json format only)
+  - json or text (not implement yet)
+  - custom format (not implement yet)
+
+
 ## sample
 
 ### string case
 - usage
 
 ```go
-package main
-import(
-    "github.com/ButterflyGate/logger"
-	. "github.com/ButterflyGate/logger/levels"
-)
-func main(){
-	l := logger.NewLogger(
-		Trace,
-	)
-	l.Trace("hello,world")
-}
+l.Trace("hello,world")
 ```
 
 - output
 
 ```json
-{
-  "level": "Info",
-  "timestamp": "2022-10-15T13:34:58.084277854+09:00",
-  "cursor": "/home/ampamman/go/src/logger/test/log_test.go:11",
-  "message": [
-    "successfly created logger struct"
-  ]
-}
 {
   "level": "Trace",
   "timestamp": "2022-10-15T13:35:07.987882308+09:00",
@@ -61,11 +55,8 @@ func main(){
 - usage
 
 ```go
-func main(){
-	l := logger.NewLogger(Notice)
-    yourStruct := something.NewYourStruct()
-	l.Notice("hello,world")
-}
+yourStruct := something.NewYourStruct()
+l.Notice(yourStruct)
 ```
 
 - output
