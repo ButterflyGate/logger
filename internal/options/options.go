@@ -1,10 +1,22 @@
 package options
 
-type Options interface {
-	IsOutputLevel() bool
-	IsOutputCursor() bool
-	IsOutputTimestamp() bool
+import "time"
 
+type Controller interface {
+	OutputController
+	FormatController
+}
+
+type OutputController interface {
+	OutputLevel(lvl string) string
+	OutputCursor(cursor string) string
+	OutputTimestamp(t *time.Time) *time.Time
+	OutputMessage(msg interface{}) interface{}
+	OutputData(data interface{}) interface{}
+	OutputStructName(sn string) string
+}
+
+type FormatController interface {
 	IsFormatReadable() bool
 	IsFormatJson() bool
 }
@@ -18,7 +30,7 @@ type controller struct {
 	format formatOptions
 }
 
-func NewController(options ...Child) Options {
+func NewController(options ...Child) Controller {
 	c := &controller{
 		output: NewOutputOption(),
 		format: NewFormatOption(),
@@ -30,20 +42,45 @@ func NewController(options ...Child) Options {
 	return c
 }
 
-func (o *controller) IsOutputLevel() bool {
-	return o.output.level
+func (o *controller) OutputLevel(lvl string) string {
+	if o.output.level {
+		return lvl
+	}
+	return lvl
 }
-
-func (o *controller) IsOutputCursor() bool {
-	return o.output.cursor
+func (o *controller) OutputCursor(cursor string) string {
+	if o.output.cursor {
+		return cursor
+	}
+	return ""
 }
-func (o *controller) IsOutputTimestamp() bool {
-	return o.output.timestamp
+func (o *controller) OutputTimestamp(t *time.Time) *time.Time {
+	if o.output.timestamp {
+		return t
+	}
+	return nil
+}
+func (o *controller) OutputMessage(msg interface{}) interface{} {
+	if o.output.message {
+		return msg
+	}
+	return ""
+}
+func (o *controller) OutputData(data interface{}) interface{} {
+	if o.output.data {
+		return data
+	}
+	return ""
+}
+func (o *controller) OutputStructName(sn string) string {
+	if o.output.structName {
+		return sn
+	}
+	return ""
 }
 func (o *controller) IsFormatJson() bool {
 	return o.format.json
 }
-
 func (o *controller) IsFormatReadable() bool {
 	return o.format.readable
 }

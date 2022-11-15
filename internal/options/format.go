@@ -3,6 +3,8 @@ package options
 type FormatOptions interface {
 	FormatJson() FormatOptions
 	FormatText() FormatOptions
+	FormatReadable() FormatOptions
+	FormatOneline() FormatOptions
 
 	apply(*controller) *controller
 }
@@ -30,12 +32,12 @@ func (o formatOptions) FormatText() FormatOptions {
 }
 
 func (o formatOptions) FormatReadable() FormatOptions {
-	o.json = false
+	o.readable = true
 	return o
 }
 
 func (o formatOptions) FormatOneline() FormatOptions {
-	o.json = false
+	o.readable = false
 	return o
 }
 

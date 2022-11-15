@@ -11,7 +11,7 @@ import (
 
 type Logger struct {
 	level   LogLevel
-	options options.Options
+	options options.Controller
 
 	emergency     logFunc
 	alert         logFunc

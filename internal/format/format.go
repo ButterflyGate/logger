@@ -12,18 +12,22 @@ import (
 )
 
 type LogFormat struct {
-	options    options.Options `json:"-"`
-	Level      string          `json:"level,omitempty"`
-	Timestamp  *time.Time      `json:"timestamp,omitempty"`
-	Cursor     string          `json:"cursor,omitempty"`
-	Message    interface{}     `json:"message,omitempty"`
-	Data       interface{}     `json:"structure_data,omitempty"`
-	StructName string          `json:"structure_name,omitempty"`
+	ctrl       options.Controller `json:"-"`
+	Level      string             `json:"level,omitempty"`
+	Timestamp  *time.Time         `json:"timestamp,omitempty"`
+	Cursor     string             `json:"cursor,omitempty"`
+	Message    interface{}        `json:"message,omitempty"`
+	Data       interface{}        `json:"structure_data,omitempty"`
+	StructName string             `json:"structure_name,omitempty"`
 }
 
-func NewLogFormat(option options.Options, level string, timestamp *time.Time, mainMsg interface{}, args ...interface{}) *LogFormat {
+func NewLogFormat(ctrl options.Controller, level string, timestamp *time.Time, mainMsg interface{}, args ...interface{}) *LogFormat {
+	if ctrl == nil {
+		ctrl = options.NewController()
+	}
 	var data interface{}
 	varName := ""
+	cursor := getCursor()
 	switch msg := mainMsg.(type) {
 	case error:
 		mainMsg = errorTypeMsg(msg)
@@ -34,43 +38,21 @@ func NewLogFormat(option options.Options, level string, timestamp *time.Time, ma
 	default:
 		mainMsg, data, varName = otherTypeMsg(msg, args...)
 	}
-	if option == nil {
-		return &LogFormat{
-			options:    option,
-			Level:      level,
-			Timestamp:  timestamp,
-			Cursor:     getCursor(),
-			Message:    mainMsg,
-			Data:       data,
-			StructName: varName,
-		}
-	}
-
-	if !option.IsOutputLevel() {
-		level = ""
-	}
-	if !option.IsOutputTimestamp() {
-		timestamp = nil
-	}
-	cursor := ""
-	if option.IsOutputCursor() { // 関数を呼ぶ手間を省きたいためここだけ NOT演算子なし
-		cursor = getCursor()
-	}
 
 	return &LogFormat{
-		options:    option,
-		Level:      level,
-		Timestamp:  timestamp,
-		Cursor:     cursor,
-		Message:    mainMsg,
-		Data:       data,
-		StructName: varName,
+		ctrl:       ctrl,
+		Level:      ctrl.OutputLevel(level),
+		Timestamp:  ctrl.OutputTimestamp(timestamp),
+		Cursor:     ctrl.OutputCursor(cursor),
+		Message:    ctrl.OutputMessage(mainMsg),
+		Data:       ctrl.OutputData(data),
+		StructName: ctrl.OutputStructName(varName),
 	}
 }
 
 func (l *LogFormat) String() string {
 	format, err := []byte{}, error(nil)
-	if l.options.IsFormatReadable() {
+	if l.ctrl.IsFormatReadable() {
 		format, err = json.MarshalIndent(l, "", "  ")
 	} else {
 		format, err = json.Marshal(l)
@@ -90,9 +72,8 @@ func stringTypeMsg(format string, a ...any) interface{} {
 	return strings.Split(msg, "\n")
 }
 
-func errorTypeMsg(err error) interface{} {
-	msg := fmt.Sprintf("%+v", err)
-	return strings.Split(msg, "\n")
+func errorTypeMsg(err error, a ...any) interface{} {
+	return strings.Split(fmt.Sprintf("%+v", err), "\n")
 }
 
 func otherTypeMsg(data interface{}, args ...interface{}) (interface{}, interface{}, string) {

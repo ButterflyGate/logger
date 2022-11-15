@@ -22,10 +22,6 @@ type Logger interface {
 	ResetLevel(level levels.LogLevel)
 }
 
-func NewLogger(level levels.LogLevel) Logger {
-	return NewLoggerWithOption(level)
-}
-
-func NewLoggerWithOption(level levels.LogLevel, options ...option) Logger {
+func NewLogger(level levels.LogLevel, options ...option) Logger {
 	return internal.NewLoggerWithOption(level, options...)
 }
