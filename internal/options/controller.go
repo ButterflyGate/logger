@@ -14,6 +14,8 @@ type OutputController interface {
 	OutputMessage(msg interface{}) interface{}
 	OutputData(data interface{}) interface{}
 	OutputStructName(sn string) string
+	IsFormatMsgRowLimitted() bool
+	LimitRowNum() int
 }
 
 type FormatController interface {
@@ -83,4 +85,10 @@ func (o *controller) IsFormatJson() bool {
 }
 func (o *controller) IsFormatReadable() bool {
 	return o.format.readable
+}
+func (o *controller) IsFormatMsgRowLimitted() bool {
+	return o.format.msgRowsLimit > 0
+}
+func (o *controller) LimitRowNum() int {
+	return o.format.msgRowsLimit
 }

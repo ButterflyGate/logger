@@ -30,9 +30,9 @@ func NewLogFormat(ctrl options.Controller, level string, timestamp *time.Time, m
 	cursor := getCursor()
 	switch msg := mainMsg.(type) {
 	case error:
-		mainMsg = errorTypeMsg(msg)
+		mainMsg = errorTypeMsg(ctrl, msg, args...)
 	case string:
-		mainMsg = stringTypeMsg(msg, args...)
+		mainMsg = stringTypeMsg(ctrl, msg, args...)
 	case map[string]interface{}:
 		mainMsg, data, varName = otherTypeMsg(msg, args...)
 	default:
@@ -67,13 +67,23 @@ func (l *LogFormat) String() string {
 	return string(format)
 }
 
-func stringTypeMsg(format string, a ...any) interface{} {
+func stringTypeMsg(ctrl options.Controller, format string, a ...any) interface{} {
 	msg := fmt.Sprintf(format, a...)
+	if ctrl.IsFormatMsgRowLimitted() {
+		return strings.Split(msg, "\n")[:ctrl.LimitRowNum()]
+	}
 	return strings.Split(msg, "\n")
 }
 
-func errorTypeMsg(err error, a ...any) interface{} {
-	return strings.Split(fmt.Sprintf("%+v", err), "\n")
+func errorTypeMsg(ctrl options.Controller, err error, a ...any) interface{} {
+	msg := fmt.Sprintf("%+v", err)
+	for _, v := range a {
+		msg = fmt.Sprintf("%v\n%v", v)
+	}
+	if ctrl.IsFormatMsgRowLimitted() {
+		return strings.Split(msg, "\n")[:ctrl.LimitRowNum()]
+	}
+	return strings.Split(msg, "\n")
 }
 
 func otherTypeMsg(data interface{}, args ...interface{}) (interface{}, interface{}, string) {

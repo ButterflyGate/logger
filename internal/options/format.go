@@ -5,19 +5,22 @@ type FormatOptions interface {
 	FormatText() FormatOptions
 	FormatReadable() FormatOptions
 	FormatOneline() FormatOptions
-
+	FormatMessageRowLimit(row uint) FormatOptions
+	FormatMessageRowUnlimit() FormatOptions
 	apply(*controller) *controller
 }
 
 type formatOptions struct {
-	json     bool
-	readable bool
+	json         bool
+	readable     bool
+	msgRowsLimit int
 }
 
 func NewFormatOption() formatOptions {
 	return formatOptions{
-		json:     true,
-		readable: true,
+		json:         true,
+		readable:     true,
+		msgRowsLimit: -1,
 	}
 }
 
@@ -38,6 +41,15 @@ func (o formatOptions) FormatReadable() FormatOptions {
 
 func (o formatOptions) FormatOneline() FormatOptions {
 	o.readable = false
+	return o
+}
+
+func (o formatOptions) FormatMessageRowLimit(row uint) FormatOptions {
+	o.msgRowsLimit = int(row)
+	return o
+}
+func (o formatOptions) FormatMessageRowUnlimit() FormatOptions {
+	o.msgRowsLimit = -1
 	return o
 }
 
