@@ -8,11 +8,11 @@ import (
 type Log interface {
 	Emergency(msg any, args ...any)
 	Alert(msg any, args ...any)
-	Critical(msg any, args ...any)
+	Crit(msg any, args ...any)
 	Error(msg any, args ...any)
-	Warning(msg any, args ...any)
+	Warn(msg any, args ...any)
 	Notice(msg any, args ...any)
-	Information(msg any, args ...any)
+	Info(msg any, args ...any)
 	Debug(msg any, args ...any)
 	Trace(msg any, args ...any)
 }

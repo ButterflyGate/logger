@@ -36,11 +36,11 @@ func NewLoggerWithOption(level LogLevel, option ...options.Child) *Logger {
 	err := l.setFunction(level)
 	if err != nil {
 		l.setFunction(levels.Informational)
-		l.Warning(err)
-		l.Information("log level is changed to \"%s\"", levels.Informational)
+		l.Warn(err)
+		l.Info("log level is changed to \"%s\"", levels.Informational)
 		return l
 	}
-	l.Information("successfly created logger struct")
+	l.Info("successfly created logger struct")
 	return l
 }
 
@@ -96,11 +96,11 @@ func (l *Logger) ResetLevel(level LogLevel) {
 	err := l.setFunction(level)
 	if err != nil {
 		l.setFunction(levels.Informational)
-		l.Warning(err)
-		l.Information("log level is changed to \"%s\"", levels.Informational)
+		l.Warn(err)
+		l.Info("log level is changed to \"%s\"", levels.Informational)
 		return
 	}
-	l.Information("set loglevel %s", level)
+	l.Info("set loglevel %s", level)
 }
 
 func (l *Logger) Emergency(msg any, args ...any) {
@@ -109,19 +109,19 @@ func (l *Logger) Emergency(msg any, args ...any) {
 func (l *Logger) Alert(msg any, args ...any) {
 	l.alert(l.options, msg, args...)
 }
-func (l *Logger) Critical(msg any, args ...any) {
+func (l *Logger) Crit(msg any, args ...any) {
 	l.critical(l.options, msg, args...)
 }
 func (l *Logger) Error(msg any, args ...any) {
 	l.errors(l.options, msg, args...)
 }
-func (l *Logger) Warning(msg any, args ...any) {
+func (l *Logger) Warn(msg any, args ...any) {
 	l.warning(l.options, msg, args...)
 }
 func (l *Logger) Notice(msg any, args ...any) {
 	l.notice(l.options, msg, args...)
 }
-func (l *Logger) Information(msg any, args ...any) {
+func (l *Logger) Info(msg any, args ...any) {
 	l.informational(l.options, msg, args...)
 }
 func (l *Logger) Debug(msg any, args ...any) {
