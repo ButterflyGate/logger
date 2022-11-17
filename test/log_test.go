@@ -32,5 +32,5 @@ func TestStructureLog(t *testing.T) {
 	l := logger.NewLogger(
 		levels.Trace,
 	)
-	l.Info(myinfo, "myinfo")
+	l.Info(myinfo, "myinfo", "aserf", 123)
 }

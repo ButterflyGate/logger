@@ -11,6 +11,10 @@ import (
 	"github.com/ButterflyGate/logger/internal/options"
 )
 
+// type LogFormat interface{
+// 	String()string
+// }
+
 type LogFormat struct {
 	ctrl       options.Controller `json:"-"`
 	Level      string             `json:"level,omitempty"`
@@ -78,7 +82,7 @@ func stringTypeMsg(ctrl options.Controller, format string, a ...any) interface{}
 func errorTypeMsg(ctrl options.Controller, err error, a ...any) interface{} {
 	msg := fmt.Sprintf("%+v", err)
 	for _, v := range a {
-		msg = fmt.Sprintf("%v\n%v", v)
+		msg = fmt.Sprintf("%v\n%v", msg, v)
 	}
 	if ctrl.IsFormatMsgRowLimitted() {
 		return strings.Split(msg, "\n")[:ctrl.LimitRowNum()]
@@ -88,16 +92,16 @@ func errorTypeMsg(ctrl options.Controller, err error, a ...any) interface{} {
 
 func otherTypeMsg(data interface{}, args ...interface{}) (interface{}, interface{}, string) {
 	name := "unknown"
-	var msg interface{} = nil
-	for i, v := range args {
-		if i == 0 {
-			name = v.(string)
-			continue
-		}
-		if i == 1 {
-			msg = make([]string, 0, len(args))
-		}
-		msg = append(msg.([]string), fmt.Sprintf("unknown message argument index%2d: %v", i, v))
+	if len(args) >= 1 {
+		name = args[0].(string)
+	}
+	if len(args) <= 1 {
+		return nil, data, name
+	}
+
+	msg := make([]string, 0, len(args))
+	for i, v := range args[1:] {
+		msg = append(msg, fmt.Sprintf("unknown message argument index%02d: %v", i+3, v))
 	}
 	return msg, data, name
 }

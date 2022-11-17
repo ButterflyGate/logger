@@ -13,15 +13,15 @@ type Logger struct {
 	level   LogLevel
 	options options.Controller
 
-	emergency     logFunc
-	alert         logFunc
-	critical      logFunc
-	errors        logFunc
-	warning       logFunc
-	notice        logFunc
-	informational logFunc
-	debug         logFunc
-	trace         logFunc
+	emergency logFunc
+	alert     logFunc
+	crit      logFunc
+	err       logFunc
+	warn      logFunc
+	notice    logFunc
+	info      logFunc
+	debug     logFunc
+	trace     logFunc
 }
 
 func NewLogger(level LogLevel) *Logger {
@@ -35,9 +35,9 @@ func NewLoggerWithOption(level LogLevel, option ...options.Child) *Logger {
 	}
 	err := l.setFunction(level)
 	if err != nil {
-		l.setFunction(levels.Informational)
+		l.setFunction(levels.Info)
 		l.Warn(err)
-		l.Info("log level is changed to \"%s\"", levels.Informational)
+		l.Info("log level is changed to \"%s\"", levels.Info)
 		return l
 	}
 	l.Info("successfly created logger struct")
@@ -46,17 +46,17 @@ func NewLoggerWithOption(level LogLevel, option ...options.Child) *Logger {
 
 func (l *Logger) setFunction(level LogLevel) error {
 	*l = Logger{
-		level:         level,
-		options:       l.options,
-		emergency:     noneLog,
-		alert:         noneLog,
-		critical:      noneLog,
-		errors:        noneLog,
-		warning:       noneLog,
-		notice:        noneLog,
-		informational: noneLog,
-		debug:         noneLog,
-		trace:         noneLog,
+		level:     level,
+		options:   l.options,
+		emergency: noneLog,
+		alert:     noneLog,
+		crit:      noneLog,
+		err:       noneLog,
+		warn:      noneLog,
+		notice:    noneLog,
+		info:      noneLog,
+		debug:     noneLog,
+		trace:     noneLog,
 	}
 
 	switch level {
@@ -66,20 +66,20 @@ func (l *Logger) setFunction(level LogLevel) error {
 	case Debug:
 		l.debug = makeLogFunc(Debug, os.Stdout)
 		fallthrough
-	case Informational:
-		l.informational = makeLogFunc(Informational, os.Stdout)
+	case Info:
+		l.info = makeLogFunc(Info, os.Stdout)
 		fallthrough
 	case Notice:
 		l.notice = makeLogFunc(Notice, os.Stdout)
 		fallthrough
-	case Warning:
-		l.warning = makeLogFunc(Warning, os.Stderr)
+	case Warn:
+		l.warn = makeLogFunc(Warn, os.Stderr)
 		fallthrough
 	case Error:
-		l.errors = makeLogFunc(Error, os.Stderr)
+		l.err = makeLogFunc(Error, os.Stderr)
 		fallthrough
-	case Critical:
-		l.critical = makeLogFunc(Critical, os.Stderr)
+	case Crit:
+		l.crit = makeLogFunc(Crit, os.Stderr)
 		fallthrough
 	case Alert:
 		l.alert = makeLogFunc(Alert, os.Stderr)
@@ -95,9 +95,9 @@ func (l *Logger) setFunction(level LogLevel) error {
 func (l *Logger) ResetLevel(level LogLevel) {
 	err := l.setFunction(level)
 	if err != nil {
-		l.setFunction(levels.Informational)
+		l.setFunction(levels.Info)
 		l.Warn(err)
-		l.Info("log level is changed to \"%s\"", levels.Informational)
+		l.Info("log level is changed to \"%s\"", levels.Info)
 		return
 	}
 	l.Info("set loglevel %s", level)
@@ -110,19 +110,19 @@ func (l *Logger) Alert(msg any, args ...any) {
 	l.alert(l.options, msg, args...)
 }
 func (l *Logger) Crit(msg any, args ...any) {
-	l.critical(l.options, msg, args...)
+	l.crit(l.options, msg, args...)
 }
 func (l *Logger) Error(msg any, args ...any) {
-	l.errors(l.options, msg, args...)
+	l.err(l.options, msg, args...)
 }
 func (l *Logger) Warn(msg any, args ...any) {
-	l.warning(l.options, msg, args...)
+	l.warn(l.options, msg, args...)
 }
 func (l *Logger) Notice(msg any, args ...any) {
 	l.notice(l.options, msg, args...)
 }
 func (l *Logger) Info(msg any, args ...any) {
-	l.informational(l.options, msg, args...)
+	l.info(l.options, msg, args...)
 }
 func (l *Logger) Debug(msg any, args ...any) {
 	l.debug(l.options, msg, args...)

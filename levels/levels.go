@@ -8,11 +8,11 @@ const (
 	None LogLevel = iota
 	Emergency
 	Alert
-	Critical
+	Crit
 	Error
-	Warning
+	Warn
 	Notice
-	Informational
+	Info
 	Debug
 	Trace LogLevel = 99
 )
@@ -25,15 +25,15 @@ func (ll LogLevel) String() string {
 		return "Emergency"
 	case Alert:
 		return "Alert"
-	case Critical:
+	case Crit:
 		return "Crit"
 	case Error:
 		return "Error"
-	case Warning:
+	case Warn:
 		return "Warn"
 	case Notice:
 		return "Notice"
-	case Informational:
+	case Info:
 		return "Info"
 	case Debug:
 		return "Debug"
