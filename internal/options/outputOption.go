@@ -8,12 +8,12 @@ type OutputOption interface {
 	HideCursor() OutputOption
 	ShowCursor() OutputOption
 
-	// HideMessage() OutputOption
-	// ShowMessage() OutputOption
-	// HideData() OutputOption
-	// ShowData() OutputOption
-	// HideStructName() OutputOption
-	// ShowStructName() OutputOption
+	HideMessage() OutputOption
+	ShowMessage() OutputOption
+	HideData() OutputOption
+	ShowData() OutputOption
+	HideStructName() OutputOption
+	ShowStructName() OutputOption
 
 	apply(*controller) *controller
 }

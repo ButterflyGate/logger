@@ -5,7 +5,7 @@ import (
 	"github.com/ButterflyGate/logger/levels"
 )
 
-type Log interface {
+type log interface {
 	Emergency(msg any, args ...any)
 	Alert(msg any, args ...any)
 	Crit(msg any, args ...any)
@@ -18,10 +18,10 @@ type Log interface {
 }
 
 type Logger interface {
-	Log
+	log
 	ResetLevel(level levels.LogLevel)
 }
 
-func NewLogger(level levels.LogLevel, options ...option) Logger {
-	return internal.NewLoggerWithOption(level, options...)
+func NewLogger[T levels.LogLevelType](level T, options ...option) Logger {
+	return internal.NewLoggerWithOption(levels.LogLevel(level), options...)
 }

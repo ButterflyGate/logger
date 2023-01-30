@@ -2,6 +2,10 @@ package levels
 
 type LogLevel int
 
+type LogLevelType interface {
+	~int
+}
+
 const LevelCnt = 8
 
 const (

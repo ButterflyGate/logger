@@ -3,13 +3,13 @@ package logger
 import "github.com/ButterflyGate/logger/internal/options"
 
 type option = options.Child
-type OutputOption = options.OutputOption
-type FormatOption = options.FormatOptions
+type outputOption = options.OutputOption
+type formatOption = options.FormatOptions
 
-func DefaultOutputOption() OutputOption {
+func DefaultOutputOption() outputOption {
 	return options.NewOutputOption()
 }
 
-func DefaultFormatOption() FormatOption {
+func DefaultFormatOption() formatOption {
 	return options.NewFormatOption()
 }

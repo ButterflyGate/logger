@@ -60,12 +60,11 @@ func recovery(err, msg any) {
 	fmt.Fprintf(os.Stderr,
 		`{
 	"level": "Fatal",
-	"timestamp": %v,
-	"cursor": %s,
+	"timestamp": "%v",
+	"cursor": "%s",
 	"fatal-message": "Logger Not Working and Trying Recovering"
-	"message": %+v
 }
-`, now, cursor, msg)
+`, now, cursor)
 
 	je := json.NewEncoder(os.Stderr)
 	je.Encode(err)
@@ -73,10 +72,11 @@ func recovery(err, msg any) {
 	now = time.Now()
 	fmt.Fprintf(os.Stderr,
 		`{
-		"level": "Fatal",
-		"timestamp": %v,
-		"cursor": %s
-		"fatal-message": "Success Recovering"
+	"level": "Fatal",
+	"timestamp": "%v",
+	"cursor": "%s"
+	"fatal-message": "Success Recovering"
+	"message": "%+v"
 }
-`, now, cursor)
+`, now, cursor, msg)
 }

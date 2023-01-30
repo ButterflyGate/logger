@@ -35,8 +35,8 @@ func NewLoggerWithOption(level LogLevel, option ...options.Child) *Logger {
 	}
 	err := l.setFunction(level)
 	if err != nil {
-		l.setFunction(levels.Info)
 		l.Warn(err)
+		l.setFunction(levels.Info)
 		l.Info("log level is changed to \"%s\"", levels.Info)
 		return l
 	}
@@ -95,12 +95,12 @@ func (l *Logger) setFunction(level LogLevel) error {
 func (l *Logger) ResetLevel(level LogLevel) {
 	err := l.setFunction(level)
 	if err != nil {
-		l.setFunction(levels.Info)
 		l.Warn(err)
+		l.setFunction(levels.Info)
 		l.Info("log level is changed to \"%s\"", levels.Info)
 		return
 	}
-	l.Info("set loglevel %s", level)
+	l.Info("log level is changed to \"%s\"", levels.Info)
 }
 
 func (l *Logger) Emergency(msg any, args ...any) {
