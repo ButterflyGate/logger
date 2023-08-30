@@ -11,9 +11,9 @@ const LevelCnt = 8
 const (
 	None LogLevel = iota
 	Emergency
-	Alert
 	Crit
 	Error
+	Alert
 	Warn
 	Notice
 	Info
@@ -27,12 +27,12 @@ func (ll LogLevel) String() string {
 		return "None"
 	case Emergency:
 		return "Emergency"
-	case Alert:
-		return "Alert"
 	case Crit:
 		return "Crit"
 	case Error:
 		return "Error"
+	case Alert:
+		return "Alert"
 	case Warn:
 		return "Warn"
 	case Notice:

@@ -6,10 +6,11 @@ import (
 )
 
 type log interface {
+	// Emergency is top level
 	Emergency(msg any, args ...any)
-	Alert(msg any, args ...any)
 	Crit(msg any, args ...any)
 	Error(msg any, args ...any)
+	Alert(msg any, args ...any)
 	Warn(msg any, args ...any)
 	Notice(msg any, args ...any)
 	Info(msg any, args ...any)

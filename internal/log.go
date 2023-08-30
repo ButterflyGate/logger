@@ -14,9 +14,9 @@ type Logger struct {
 	options options.Controller
 
 	emergency logFunc
-	alert     logFunc
 	crit      logFunc
 	err       logFunc
+	alert     logFunc
 	warn      logFunc
 	notice    logFunc
 	info      logFunc
@@ -49,9 +49,9 @@ func (l *Logger) setFunction(level LogLevel) error {
 		level:     level,
 		options:   l.options,
 		emergency: noneLog,
-		alert:     noneLog,
 		crit:      noneLog,
 		err:       noneLog,
+		alert:     noneLog,
 		warn:      noneLog,
 		notice:    noneLog,
 		info:      noneLog,
@@ -75,14 +75,14 @@ func (l *Logger) setFunction(level LogLevel) error {
 	case Warn:
 		l.warn = makeLogFunc(Warn, os.Stderr)
 		fallthrough
+	case Alert:
+		l.alert = makeLogFunc(Alert, os.Stderr)
+		fallthrough
 	case Error:
 		l.err = makeLogFunc(Error, os.Stderr)
 		fallthrough
 	case Crit:
 		l.crit = makeLogFunc(Crit, os.Stderr)
-		fallthrough
-	case Alert:
-		l.alert = makeLogFunc(Alert, os.Stderr)
 		fallthrough
 	case Emergency:
 		l.emergency = makeLogFunc(Emergency, os.Stderr)
@@ -106,14 +106,14 @@ func (l *Logger) ResetLevel(level LogLevel) {
 func (l *Logger) Emergency(msg any, args ...any) {
 	l.emergency(l.options, msg, args...)
 }
-func (l *Logger) Alert(msg any, args ...any) {
-	l.alert(l.options, msg, args...)
-}
 func (l *Logger) Crit(msg any, args ...any) {
 	l.crit(l.options, msg, args...)
 }
 func (l *Logger) Error(msg any, args ...any) {
 	l.err(l.options, msg, args...)
+}
+func (l *Logger) Alert(msg any, args ...any) {
+	l.alert(l.options, msg, args...)
 }
 func (l *Logger) Warn(msg any, args ...any) {
 	l.warn(l.options, msg, args...)

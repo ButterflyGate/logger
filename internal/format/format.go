@@ -95,6 +95,9 @@ func otherTypeMsg(data interface{}, args ...interface{}) (interface{}, interface
 	if len(args) >= 1 {
 		name = args[0].(string)
 	}
+	if data == nil {
+		data = "nil"
+	}
 	if len(args) <= 1 {
 		return nil, data, name
 	}

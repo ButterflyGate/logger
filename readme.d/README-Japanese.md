@@ -8,9 +8,9 @@ Butterfly Gate標準ログライブラリ
 | ---:        | :----: | :---------: | :---------- |
 | None        | 0      | stderr      | 出力なし |
 | Emergency   | 1      | stderr      | Emergency レベルのみ出力 |
-| Alert       | 2      | stderr      | Alert と Emergency レベルを出力 |
-| Critical    | 3      | stderr      | Critical レベル以上のログを出力 |
-| Error       | 4      | stderr      | Error レベル以上のログを出力 |
+| Critical    | 2      | stderr      | Critical と Emergency レベルを出力 |
+| Error       | 3      | stderr      | Error レベル以上のログを出力 |
+| Alert       | 4      | stderr      | Alert レベル以上のログを出力 |
 | Warning     | 5      | stderr      | Warning レベル以上のログを出力 |
 | Notice      | 6      | stdout      | Notice レベル以上のログを出力 |
 | Information | 7      | stdout      | Information レベル以上のログを出力 |

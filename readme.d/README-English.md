@@ -8,9 +8,9 @@ logging levels
 | ---:        | :----: | :---------: | :---------- |
 | None        | 0      | stderr      | output nothing |
 | Emergency   | 1      | stderr      | only Emergency level output |
-| Alert       | 2      | stderr      | Alert and Emergency level log |
-| Critical    | 3      | stderr      | Similarly, above levels and this level |
-| Error       | 4      | stderr      | Similarly, above levels and this level |
+| Critical    | 2      | stderr      | Critical and Emergency level log |
+| Error       | 3      | stderr      | Similarly, above levels and this level |
+| Alert       | 4      | stderr      | Similarly, above levels and this level |
 | Warning     | 5      | stderr      | Similarly, above levels and this level |
 | Notice      | 6      | stdout      | Similarly, above levels and this level |
 | Information | 7      | stdout      | Similarly, above levels and this level |
@@ -21,11 +21,11 @@ logging levels
   - output nothing.
 - Emergency
   - One or more key business functionalities are not working and the whole system doesn’t fulfill the business functionalities.
-- Alert
-  - 
 - Critical
   - 
 - Error
+  - 
+- Alert
   - 
 - Worning
   - Unexpected behavior happened inside the application, but it is continuing its work and the key business features are operating as expected.
